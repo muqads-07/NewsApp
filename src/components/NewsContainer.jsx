@@ -46,8 +46,8 @@ const NewsContainer = ({ category }) => {
         setCurrentPage(1);
     }, [category]);
 
-    const handleSearch = (query) => {
-        setSearchQuery(query);
+    const handleSearch = (input) => {
+        setSearchQuery(input);
         setCurrentPage(1);
     };
 
