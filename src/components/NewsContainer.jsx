@@ -13,31 +13,31 @@ const NewsContainer = ({ category }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalResults, setTotalResults] = useState(0); 
     
+    const fetchNews = async () => {
+        setLoading(true); 
+        const API_KEY = '475dab401b2747f3b4cc74ea88d08276';
+        const baseUrl = 'https://newsapi.org/v2';
+        let url;
+
+        if (searchQuery) {
+            url = `${baseUrl}/everything?q=${encodeURIComponent(searchQuery)}&apiKey=${API_KEY}&page=${currentPage}&pageSize=9`;
+        } else {
+            url = `${baseUrl}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}&page=${currentPage}&pageSize=9`;
+        }
+
+        try {
+            const response = await axios.get(url);
+            setArticles(response.data.articles);
+            setTotalResults(response.data.totalResults); 
+            setError(null); 
+        } catch (err) {
+            setError('Failed to fetch news articles');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchNews = async () => {
-            setLoading(true); 
-            const API_KEY = '475dab401b2747f3b4cc74ea88d08276';
-            const baseUrl = 'https://newsapi.org/v2';
-            let url;
-
-            if (searchQuery) {
-                url = `${baseUrl}/everything?q=${encodeURIComponent(searchQuery)}&apiKey=${API_KEY}&page=${currentPage}&pageSize=9`;
-            } else {
-                url = `${baseUrl}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}&page=${currentPage}&pageSize=9`;
-            }
-
-            try {
-                const response = await axios.get(url);
-                setArticles(response.data.articles);
-                setTotalResults(response.data.totalResults); 
-                setError(null); 
-            } catch (err) {
-                setError('Failed to fetch news articles');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchNews();
     }, [searchQuery, category, currentPage]);
 
